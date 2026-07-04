@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #020617;
+    color: #e5e7eb;
+    padding: 40px;
+}
+
+.box {
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #38bdf8;
+    color: #0f172a;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+    <h1 id="title"></h1>
+    <p id="desc"></p>
+
+    <div id="adminPanel" style="display:none;">
+        <h2>Admin‑Bereich</h2>
+        <p>Gehe zur Server‑Konsole:</p>
+        <button onclick="location.href='server.html'">Server‑Konsole öffnen</button>
+
+        <h3>Besucher‑Liste</h3>
+        <div id="visitors"></div>
+
+        <h3>Easter‑Egg</h3>
+        <p style="color:#38bdf8;">🎉 Geheim: Admin‑Modus aktiviert!</p>
+    </div>
+
+    <div id="userPanel" style="display:none;">
+        <h2>User‑Bereich</h2>
+        <p>Willkommen im Benutzerbereich.</p>
+    </div>
+
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+const role = localStorage.getItem("role");
+
+if (!role) {
+    window.location.href = "login.html";
+}
+
+document.getElementById("title").innerText =
+    role === "admin" ? "Admin‑Dashboard" : "User‑Dashboard";
+
+document.getElementById("desc").innerText =
+    role === "admin"
+        ? "Du hast volle Kontrolle über den Server."
+        : "Du bist eingeloggt als normaler Benutzer.";
+
+if (role === "admin") {
+    document.getElementById("adminPanel").style.display = "block";
+
+    const visitors = JSON.parse(localStorage.getItem("visitors") || "[]");
+    let html = "<ul>";
+    visitors.forEach(v => {
+        html += `<li>${v.name} – ${v.time}</li>`;
+    });
+    html += "</ul>";
+    document.getElementById("visitors").innerHTML = html;
+
+} else {
+    document.getElementById("userPanel").style.display = "block";
+}
+
+function logout() {
+    localStorage.removeItem("role");
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
